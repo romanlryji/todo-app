@@ -30,3 +30,5 @@ func initConfig() error {
 	viper.SetConfigName("config")
 	return viper.ReadInConfig()
 }
+
+// docker run --name=todo-db -e POSTGRES_USER=qwerty -e POSTGRES_PASSWORD=qwerty -p 5436:5432 -d --rm postgres
