@@ -1,7 +1,6 @@
 package main
 
 import (
-	"log"
 	"os"
 
 	"github.com/joho/godotenv"
@@ -9,16 +8,18 @@ import (
 	"github.com/romanlryji/todo-app/pkg/handler"
 	"github.com/romanlryji/todo-app/pkg/repository"
 	"github.com/romanlryji/todo-app/pkg/service"
+	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 )
 
 func main() {
+	logrus.SetFormatter(new(logrus.JSONFormatter))
 	if err := initConfig(); err != nil {
-		log.Fatalf("Error while reading config %s\n", err.Error())
+		logrus.Fatalf("Error while reading config %s\n", err.Error())
 	}
 
 	if err := godotenv.Load(); err != nil {
-		log.Fatalf("Error while reading env %s\n", err.Error())
+		logrus.Fatalf("Error while reading env %s\n", err.Error())
 	}
 
 	db, err := repository.NewPostgresDB(repository.Config{
@@ -30,7 +31,7 @@ func main() {
 		SSLMode:  viper.GetString("db.sslmode"),
 	})
 	if err != nil {
-		log.Fatalf("Failed to initialize db: %s", err.Error())
+		logrus.Fatalf("Failed to initialize db: %s", err.Error())
 	}
 
 	repos := repository.NewRepository(db)
@@ -39,7 +40,7 @@ func main() {
 
 	srv := new(todo.Server)
 	if err := srv.Run(viper.GetString("port"), handlers.InitRoutes()); err != nil {
-		log.Fatalf("Error while running http server %s\n", err.Error())
+		logrus.Fatalf("Error while running http server %s\n", err.Error())
 	}
 }
 
