@@ -5,7 +5,7 @@ import (
 	"github.com/romanlryji/todo-app"
 )
 
-type Authorization interface {
+type AuthorizationRepository interface {
 	CreateUser(user todo.User) (int, error)
 }
 
@@ -16,13 +16,13 @@ type TodoItem interface {
 }
 
 type Repository struct {
-	Authorization
+	AuthorizationRepository
 	TodoList
 	TodoItem
 }
 
 func NewRepository(db *sqlx.DB) *Repository {
 	return &Repository{
-		Authorization: NewAuthPostgres(db),
+		AuthorizationRepository: NewAuthPostgres(db),
 	}
 }

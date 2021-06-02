@@ -5,7 +5,7 @@ import (
 	"github.com/romanlryji/todo-app/pkg/repository"
 )
 
-type Authorization interface {
+type AuthorizationService interface {
 	CreateUser(user todo.User) (int, error)
 }
 
@@ -16,13 +16,13 @@ type TodoItem interface {
 }
 
 type Service struct {
-	Authorization
+	AuthorizationService
 	TodoList
 	TodoItem
 }
 
 func NewService(repos *repository.Repository) *Service {
 	return &Service{
-		Authorization: NewAuthService(repos.Authorization),
+		AuthorizationService: NewAuthService(repos.AuthorizationRepository),
 	}
 }
