@@ -4,10 +4,28 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/romanlryji/todo-app"
 )
 
 func (h *Handler) createList(c *gin.Context) {
-	id, _ := c.Get(userCtx)
+	userId, err := getUserId(c)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	var request todo.TodoList
+	if err := c.BindJSON(&request); err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	id, err := h.services.TodoList.Create(userId, request)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
 	c.JSON(http.StatusOK, map[string]interface{}{
 		"id": id,
 	})
