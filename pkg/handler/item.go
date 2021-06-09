@@ -95,13 +95,13 @@ func (h *Handler) updateItem(c *gin.Context) {
 		return
 	}
 
-	var input todo.UpdateItemRequest
-	if err := c.BindJSON(&input); err != nil {
+	var request todo.UpdateItemRequest
+	if err := c.BindJSON(&request); err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
-	if err := h.services.TodoItem.Update(userId, id, input); err != nil {
+	if err := h.services.TodoItem.Update(userId, id, request); err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
